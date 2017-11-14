@@ -32,7 +32,7 @@ def main():
     driver.switch_to.window(tabs[1])
     time.sleep(2)
     driver.find_element_by_tag_name('body').send_keys(Keys.CONTROL + 's')
-    pyautogui.press('enter')
+    pyautogui.press("ENTER")
 
     time.sleep(10)
 main()
