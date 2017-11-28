@@ -1,0 +1,53 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>Beermanity</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="{{url_for('static',filename='bootstrap.min.css')}}">
+	<link rel="shortcut icon" href="{{ url_for('static', filename='beerico.png') }}">
+</head>
+<header>
+	<div class="navbar-header">
+      		<a class="navbar-brand" href="/">
+	  	<img style="max-width:60px; margin-top: -7px;" src="{{ url_for('static', filename='beerico.png') }}">
+	  	</a>
+    	</div>
+	
+</header>
+
+<body> 
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+
+	<div class="container">
+		<b4>Register</b4>
+		<br>
+		{% from "_formhelpers.html" import render_field %}
+		<form method=post action="/register/">
+	
+		<dl> 
+			{{render_field(form.username)}}
+			{{render_field(form.password)}}
+			{{render_field(form.confirm)}}
+			{{render_field(form.accept_tos)}}	
+		
+		<p><input type=submit value=Register></p>
+		</form>
+		{% if error %}
+		<p class="error"><strong>Error:</strong>{{error}}</p>
+		
+		{% endif %}
+	
+	
+	
+	</div>
+
+</body>
+</html>

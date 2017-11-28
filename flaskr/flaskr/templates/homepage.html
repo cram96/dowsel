@@ -1,0 +1,37 @@
+
+<!DOCTYPE html>
+<html lang="en"style="background-color:#3E51AB;">
+<head>
+	<meta charset="utf-8">
+	<title>Beermanity</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="{{url_for('static',filename='bootstrap.min.css')}}">
+	<link rel="shortcut icon" href="{{ url_for('static', filename='beerico.png') }}">
+</head>
+<nav class="navbar navbar-light bg-light" style="background-color:#3E51AB;">
+  <a class="navbar-brand" href="/">
+    <img src="{{ url_for('static', filename='beerico.png') }}" width="50" height="50" class="d-inline-block align-top" alt="">
+
+  </a>
+  <a class="navbar-brand" href="/login">
+  	<img src="{{ url_for('static', filename='user.png') }}"width="50" height="50">
+  	<p style="color:yellow">Login!</p>
+  </a>
+    <a class="navbar-brand" href="/register">
+  	<img src="{{ url_for('static', filename='register.png') }}"width="50" height="50">
+  	<p style="color:yellow">Register!</p>
+  </a></nav>
+
+<body style="background-color:#3E51AB;font-size:400%;">
+<p align="center"> 
+BEERMANITY
+</p>
+
+<br>
+<br>
+<br>
+<p align="center"> 
+Bienvenido, esta página te permitirá jugar a Beermanity, un juego para pasar un buen rato mientras te tomas unas copas con tus colegas, have fun!
+</p>
+</body>
+</html>
