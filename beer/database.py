@@ -4,7 +4,7 @@ ListaDescripciones = []
 ListaPruebas = []
 class main:
 
-    conn_string = "host='137.74.168.217' dbname='beermanity' user='postgres' password='beermanity'"
+    conn_string = "host='localhost' dbname='beermanity' user='postgres' password='beermanity'"
     conn = psycopg2.connect(conn_string)
     cursor = conn.cursor()
     cursor.execute("Select * from pruebas")
