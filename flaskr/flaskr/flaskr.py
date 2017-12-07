@@ -1,7 +1,7 @@
-from db import connection
+from db import connection,getPruebas,insertUser,validarUser
 import os 
 import sqlite3
-from flask import Flask, request, session, g, redirect, url_for, abort, render_template, flash 
+from flask import Flask, request, session, g, redirect, url_for, abort, render_template, flash,g
 from wtforms import Form, BooleanField, TextField, PasswordField, validators
 from passlib.hash import sha256_crypt
 import gc
@@ -11,77 +11,114 @@ app.secret_key="ramoslq6785_lolipop990"
 
 app.config.from_envvar('FLASKR_SETTINGS',silent=True)
 
-@app.route('/in/')
+validar=False
+players=[]
+titulos=[]
+pruebas=[]
+p=-1
+j=-1
+
+@app.before_request
+def before_request():
+	g.user=None
+	if 'user' in session:
+		g.user=session['user']
+
+
+
+@app.route('/in/',methods=['POST','GET'])
 def show_in():
-	return render_template('in.html')
+	if g.user:
+		return render_template('in.html')
+	return redirect(url_for('show_login'))
 
 
-@app.route('/')
+@app.route('/in/add',methods=['POST','GET'])
+def in_add():
+	if g.user:
+		gc.collect()
+		if request.form['jugador']=='':
+			return render_template('in.html',players=players)
+		players.append(request.form['jugador'])
+		return render_template('in.html',players=players)
+	
+	return redirect(url_for('show_login'))
+
+
+@app.route('/in/del',methods=['GET','POST','DELETE'])
+def in_del():
+	gc.collect()
+	if g.user:
+		if len(players)>0:
+			players.remove(request.form['delete'])
+			redirect(request.path)		
+			return render_template('in.html',players=players)
+		else:
+			return render_template('in.html',players=players)
+	return redirect(url_for('show_login'))
+
+
+@app.route('/play/',methods=['GET','POST'])
+def show_play():
+	global p
+	global j
+	if len(players)==0:
+		flash("tiene que haber al menos un jugador")
+		return redirect(url_for('show_in'))
+	if g.user:
+		getPruebas()
+		if p+1>=len(players):
+			p=-1
+		p=p+1
+		j=j+1
+		return render_template('partida.html',player=players[p],prueba=pruebas[j],titulo=titulos[j])
+
+
+@app.route('/',methods=['GET','POST'])
 def show_homepage():
+
 	return render_template('homepage.html')
 
-
-
-
-@app.route('/login/',methods=['GET','POST'])
+@app.route('/login/',methods=['POST','GET'])
 def show_login():
 	error=''
+	gc.collect()
 	try:
 		if request.method=="POST":
+			session.pop('user',None)
 			attempted_username=request.form['username']
 			attempted_password=request.form['password']
-			c,conn=connection()
-			usuario=str(attempted_username)
-			contrasena=str(attempted_password)
-			query="Select * from users where name="+usuario+" and password="+contrasena
-			c.execute(query)
-			if (len(c))>0:
+			validarUser(attempted_username,attempted_password)
+			if validar is True:
+				session['user']=request.form['username']
 				return redirect(url_for('show_in'))
 			else:
-				error="Usuario o contraseña incorrectos"
 
-
+				return render_template('login.html',error='usuario o contraseña incorrectos')
 		return render_template('login.html',error=error)
 	except Exception as e:
 		flash(e)
 		return render_template('login.html',error=error)
 
-class RegistrationForm(Form):
-	username= TextField('Username',[validators.Length(min=4,max=20)])
-	password= PasswordField('Password',[validators.Required(),validators.EqualTo('confirm',message="Password must match")])
-	confirm=PasswordField('Repeat Password')
-	accept_tos= BooleanField('I accept the <a href="/tos/">Terms of Service</a> and the <a href="/privacy/">Privacy Notice</a>',[validators.Required()])
-
 
 @app.route('/register/',methods=["GET","POST"])
 def show_register():
+	error=''
 	try:
-		form= RegistrationForm(request.form)
-		if request.method == "POST" and form.validate():
-			username= form.username.data
-			password= sha256_crypt.encrypt(str(form.password.data))
-			c, conn= connection()
-			c.execute("SELECT count(*) from users WHERE name like %s ",(username,))
-			x=c.fetchall()
-			if x:
-				flash("That username is already taken, please choose another")
-				return render_template('register.html',form=form)
-
-
+		if request.method=="POST":
+			reg_user=request.form['reg_user']
+			reg_password=request.form['reg_password']
+			reg_password2=request.form['reg_password2']
+			if reg_password==reg_password2:
+				c,conn=connection()
+				usuario="'"+reg_user+"'"
+				password="'"+reg_password+"'"
+				insertUser(usuario,password)
+				return redirect(url_for('show_homepage'))
 			else:
-				flash("HIII")
-				c.execute("INSERT INTO users(username,password) values (&s,&s)",(username),(password))
-				
-				conn.commit()
-				flash("Thanks for registering")
-				c.close()
-				conn.close()
-				gc.collect()
-				session['logged_in']=True
-				session['username']=username
-				return render_template("/in.html/")
-		return render_template("register.html",form=form)
+				return render_template("register.html",error="las contraseñas no coinciden")
+		return render_template("register.html",error=error)
 	except Exception as e:
-		return (str(e))
+		return render_template('register.html',error=error)
 
 

@@ -1,6 +1,6 @@
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en"style="background-color:#273C49;">
 <head>
 	<meta charset="utf-8">
 	<title>Beermanity</title>
@@ -14,7 +14,7 @@
       		<a class="navbar-brand" href="/">
 	  	<img style="max-width:60px; margin-top: -7px;" src="{{ url_for('static', filename='beerico.png') }}">
 	  	</a>
-    	
+
 
     		
     	</div>
@@ -22,8 +22,35 @@
 
 
 </header>
-<body> 
-<p> you are in!! </p>
+<body style="background-color:#273C49;"> 
+    	<form action="add" href="/in/add" class="form-inline" method="post">
+			<input type="text" class="form-control"
+			  placeholder = "Jugador" name="jugador" value="{{request.form.jugador}}">
+			
+			<input class="btn btn-default" type="submit" value="Añadir">
+		</form>
+		
+<form action="del" href ="/in/del"class="form-inline" method="post">
+			<input type="text" class="form-control"
+			  placeholder = "Delete" name="delete" value="{{request.form.delete}}">
+<input class="btn btn-default" type="submit" value="Eliminar">
+</form>
+
 </body>
 
+<h4 align="center" style="color:yellow"> Lista de jugadores:</h4>
+<br>
+{% for player in players %}
+<div align="center" style="color:yellow">{{player}} </div>
+{% endfor %}
+
+<br>
+<br>
+<br>
+<br>
+<br>
+  <a class="navbar-brand" href="/play">
+  	<img src="{{ url_for('static', filename='next.png') }}"width="74" height="74">
+  	<p style="color:yellow">  _PLAY!</p>
+  </a>
 </html>

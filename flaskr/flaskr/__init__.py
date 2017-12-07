@@ -1,2 +1,2 @@
-from .flaskr import app
-from .db import connection
+#from .flaskr import app
+#from .db import connection

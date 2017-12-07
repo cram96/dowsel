@@ -1,6 +1,6 @@
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en"style="background-color:#273C49;">
 <head>
 	<meta charset="utf-8">
 	<title>Beermanity</title>
@@ -8,7 +8,7 @@
 	<link rel="stylesheet" href="{{url_for('static',filename='bootstrap.min.css')}}">
 	<link rel="shortcut icon" href="{{ url_for('static', filename='beerico.png') }}">
 </head>
-<header>
+<header style="background-color:#273C49;">
 	<div class="navbar-header">
       		<a class="navbar-brand" href="/">
 	  	<img style="max-width:60px; margin-top: -7px;" src="{{ url_for('static', filename='beerico.png') }}">
@@ -17,7 +17,7 @@
 	
 </header>
 
-<body> 
+<body style="background-color:#273C49;"> 
 <br>
 <br>
 <br>
@@ -25,28 +25,20 @@
 <br>
 <br>
 <br>
-
-	<div class="container">
-		<b4>Register</b4>
+<div class="container" style="background-color:#273C49;">
+		<h4 style="color:red">Please Register:</h4>
 		<br>
-		{% from "_formhelpers.html" import render_field %}
-		<form method=post action="/register/">
-	
-		<dl> 
-			{{render_field(form.username)}}
-			{{render_field(form.password)}}
-			{{render_field(form.confirm)}}
-			{{render_field(form.accept_tos)}}	
-		
-		<p><input type=submit value=Register></p>
+		<form action="" class="form-inline" method="post">
+			<input type="text" class="form-control"
+			  placeholder = "Username" name="reg_user" value="{{request.form.reg_user}}">
+			<input type="password" class="form-control" 
+			 placeholder = "Password" name="reg_password" value="{{request.form.reg_password}}">
+			 <input type="password" class="form-control" 
+			 placeholder = "Repite la contraseña" name="reg_password2" value="{{request.form.reg_password2}}">
+			<input class="btn btn-default" type="submit" value="Login">
 		</form>
-		{% if error %}
-		<p class="error"><strong>Error:</strong>{{error}}</p>
-		
-		{% endif %}
-	
-	
-	
+		<br>
+		<p style="color:red">{{error}} </p>
 	</div>
 
 </body>
