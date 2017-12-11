@@ -5,6 +5,8 @@ from flask import Flask, request, session, g, redirect, url_for, abort, render_t
 from wtforms import Form, BooleanField, TextField, PasswordField, validators
 from passlib.hash import sha256_crypt
 import gc
+import random
+
 app= Flask(__name__)
 app.config.from_object(__name__)
 app.secret_key="ramoslq6785_lolipop990"
@@ -28,6 +30,7 @@ def before_request():
 
 @app.route('/in/',methods=['POST','GET'])
 def show_in():
+	getPruebas()
 	if g.user:
 		return render_template('in.html')
 	return redirect(url_for('show_login'))
@@ -50,25 +53,42 @@ def in_del():
 	gc.collect()
 	if g.user:
 		if len(players)>0:
+			if request.form['delete']=='':
+				redirect(request.path)
+				return render_template('in.html',players=players)
 			players.remove(request.form['delete'])
 			redirect(request.path)		
 			return render_template('in.html',players=players)
 		else:
 			return render_template('in.html',players=players)
 	return redirect(url_for('show_login'))
-
-
+@app.route('/in/addp',methods=['GET','POST'])
+def in_addp():
+	gc.collect()
+	if g.user:
+		if request.form['prueba']=='':
+			redirect(request.path)
+			return render_template('in.html',players=players)
+		x=random.randint(0,len(pruebas)-1)
+		
+		pruebas.insert(x,request.form['prueba'])
+		titulos.insert(x,"Prueba del usuario")
+		return render_template('in.html',players=players)
 @app.route('/play/',methods=['GET','POST'])
 def show_play():
 	global p
 	global j
+	random.shuffle(players)
+	
 	if len(players)==0:
 		flash("tiene que haber al menos un jugador")
 		return redirect(url_for('show_in'))
 	if g.user:
-		getPruebas()
+		if len(titulos)==0:
+			getPruebas()
 		if p+1>=len(players):
 			p=-1
+		
 		p=p+1
 		j=j+1
 		return render_template('partida.html',player=players[p],prueba=pruebas[j],titulo=titulos[j])
